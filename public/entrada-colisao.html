@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roubo ou furto</title>
+    <title>Colisão</title>
 
     <link rel="stylesheet" href="./assets/css/styles.css">
 
@@ -101,7 +101,7 @@
         <!-- titulo do formulário -->
         <div class="container">
             <div class="row">
-                <h2 style="text-align: center;">Entrada de eventos para roubo ou furto</h2>
+                <h2 style="text-align: center;">Entrada de eventos para colisão</h2>
             </div>
         </div>
 
@@ -125,7 +125,7 @@
 
         <!-- formulário -->
         <div class="container">
-            <form action="/uploadfiles" method="post" enctype="multipart/form-data">
+            <form action="/uploadfilescolisao" method="post" enctype="multipart/form-data">
                 <div class="row subtitulo">
                   <div class="col-12">
                     <h3>Preencha com os dados do associado RioBen</h3>
@@ -134,41 +134,24 @@
                 <div class="row" style="margin-top: 16px;">
                     <div class="col-md-4">
                         <label for="nome" class="form-label">Digite seu nome aqui</label>
-                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome" required>
+                        <input type="text" class="form-control" id="nome" name="nome_colisao" placeholder="Digite seu nome" required>
                     </div>
                     <div class="col-md-4">
                         <label for="cpf" class="form-label">Digite seu CPF abaixo</label>
-                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="Digite seu CPF " required>
+                        <input type="text" class="form-control" id="cpf" name="cpf_colisao" placeholder="Digite seu CPF " required>
                     </div>
                     <div class="col-md-4">
                       <label for="comprovante_residencia" class="form-label">Comprovante de residencia</label>
-                      <input type="file" name="comprovante_residencia" class="form-control"  id="comprovante_residencia" required/>
+                      <input type="file" name="comprovante_residencia_colisao" class="form-control"  id="comprovante_residencia" required/>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 16px;">
                   <div class="col-md-6">
                     <label for="id_cnh" class="form-label">Cópia da CNH ou da Identidade</label>
-                    <input type="file" name="id_cnh" class="form-control" id="id_cnh" required/>
+                    <input type="file" name="id_cnh_colisao" class="form-control" id="id_cnh" required/>
                   </div>
                 </div>
 
-
-                <!-- DADOS DO CONDUTOR -->
-                <div class="row subtitulo">
-                  <div class="col-md-12">
-                    <h3>Preencha com os dados do condutor</h3>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-6">
-                    <label for="cnh_condutor" class="form-label">Cópia da CNH do condutor</label>
-                    <input type="file" name="cnh_condutor" class="form-control" id="cnh_condutor"required />
-                  </div>
-                  <div class="col-md-6">
-                    <label for="comprovante_residencia_condutor" class="form-label">Comprovante de residência do condutor</label>
-                    <input type="file" name="comprovante_residencia_condutor" class="form-control" id="comprovante_residencia_condutor"required />
-                  </div>
-                </div>
 
 
                 <!-- DADOS DO VEÍCULO -->
@@ -180,11 +163,11 @@
                 <div class="row">
                   <div class="col-md-6">
                     <label for="crv_carro" class="form-label">Cópia do CRV do veículo</label>
-                    <input type="file" name="crv_carro" class="form-control" id="crv_carro" required/>
+                    <input type="file" name="crlv_carro_colisao" class="form-control" id="crv_carro" required/>
                   </div>
                   <div class="col-md-6">
                     <label for="homologacao_kitgas" class="form-label">Cópia do documento de homologação</label>
-                    <input type="file" name="homologacao_kitgas" class="form-control" id="homologacao_kitgas" required/>
+                    <input type="file" name="homologacao_kitgas_colisao" class="form-control" id="homologacao_kitgas" required/>
                   </div>
                 </div>
 
@@ -199,7 +182,7 @@
                 <div class="row">
                   <div class="col-md-6">
                     <label for="registro_ocorrencia" class="form-label">Cópia do Registro de ocorrência</label>
-                    <input type="file" name="registro_ocorrencia" class="form-control" id="registro_ocorrencia" required/>
+                    <input type="file" name="registro_ocorrencia_colisao" class="form-control" id="registro_ocorrencia" required/>
                   </div>
                 </div>
 

@@ -17,6 +17,8 @@ const port = 3000;
 // Multer import
 const multer = require('multer');
 
+
+
 // firebase import
 var admin = require("firebase-admin")
 const currentDirectory = __dirname;
@@ -32,6 +34,10 @@ const firebase = admin.initializeApp({
 let rtdb = firebase.database(); 
 
 
+// nodemailer import
+const nodemailer = require("nodemailer");
+
+
 // GET METHOD
 app.get('/', (req, res) => {
   res.send('index')
@@ -44,194 +50,410 @@ const currentDate = Date.now();
 const formatedDate = new Date()
 
 let documentos = [];
+let documentosToSendInEmail = []
 
 let storage = multer.diskStorage(
   {
     destination: function (req, file, cb) {
       cb(null, diretorio)
     },
-    filename: function (req, file, cb) {
+    filename: function async (req, file, cb) {
       let filename_l = "";
 
       let extensao = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
+      
 
-      filename_l = file.fieldname + "_" + "doc_" + currentDate + extensao;
+      filename_l =  file.fieldname + "_" + "doc_" + currentDate + extensao;
+      let path =  "./uploads/" + filename_l;
+
+
       documentos.push({nome_do_arquivo: filename_l, extensao, data_de_insercao: formatedDate});
+      documentosToSendInEmail.push({filename: filename_l, path});
 
       cb(null, filename_l)
     }
   }
 )
 
+//rotas de gerenciamento de arquivos
+  // rota responsável por tratar os documentos do rouvo ou furto
+  const upload = multer({storage: storage})
+  const cpUpload = upload.fields([{name: 'comprovante_residencia'}, {name: 'id_cnh'}, {name: 'cnh_condutor'}, {name: 'comprovante_residencia_condutor'}, {name: 'crv_carro'}, {name: 'homologacao_kitgas'}, {name: 'registro_ocorrencia'}]);
+  app.post('/uploadfiles', cpUpload, async (req, res, next) => { 
 
-const upload = multer({storage: storage})
-const cpUpload = upload.fields([{name: 'comprovante_residencia'}, {name: 'id_cnh'}, {name: 'cnh_condutor'}, {name: 'comprovante_residencia_condutor'}, {name: 'crv_carro'}, {name: 'homologacao_kitgas'}, {name: 'registro_ocorrencia'}]);
-app.post('/uploadfiles', cpUpload, async (req, res, next) => { 
-
-  // pegando variaveis de texto
-  let nome = req.body.nome
-  let cpf = req.body.cpf
- 
-
-  // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
-  const char4 = cpf.substring(0,4);
-  const protocolo = currentDate + char4;
-
-
-  // variável que guarda o nome temporário dos arquivos - A ser utilizado no loop
-  let descricao_do_arquivo = ""
-
-
-  // inserindo associado
-  await rtdb.ref('associados/' + cpf).set({
-      nome
-    }).then(() => { 
-      console.log("associado cadastrado");
-    });
-
-
-  await rtdb.ref('protocolos/' + protocolo).set({
-      data: formatedDate,
-      associado: cpf,
-      documentos,
-      terceiros: []
-    }).then(() => { 
-      console.log("protocolo cadastrado");
-    });
+    // pegando variaveis de texto
+    let nome = req.body.nome
+    let cpf = req.body.cpf
   
-  for(let i = 0; i<documentos.length; i++){
-    let idObject = protocolo + "_" + documentos[i].nome_do_arquivo;
 
-    switch (documentos[i].nome_do_arquivo) {
-      case "nome":
-        descricao_do_arquivo = "Nome do associado"
-        break;
-      
-      case "cpf": 
-        descricao_do_arquivo = "CPF do associado"
-      break;
-
-      case "comprovante_residencia": 
-        descricao_do_arquivo = "comprovante de residência do associado"
-        break;
-
-      case "id_cnh": 
-        descricao_do_arquivo = "Identidade ou CNH do associado"
-        break;
-
-      case "cnh_condutor": 
-        descricao_do_arquivo = "CNH do condutor"
-        break; 
-
-      case "comprovante_residencia_condutor": 
-        descricao_do_arquivo = "Comprovante de residência do condutor"
-        break;
-
-      case "crv_veiculo": 
-        descricao_do_arquivo = "Documento de compra e venda do veículo"
-        break;
-
-      case "homologacao_kitgas": 
-        descricao_do_arquivo = "Documento de homologação do kitgás"
-        break;
+    // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
+    const char4 = cpf.substring(0,4);
+    const protocolo = currentDate + char4;
 
 
-      case "registro_ocorrencia": 
-        descricao_do_arquivo = "Registro de ocorrência"
+    // variável que guarda o nome temporário dos arquivos - A ser utilizado no loop
+    let descricao_do_arquivo = ""
+
+
+    // inserindo associado
+    await rtdb.ref('associados/' + cpf).set({
+        nome
+      }).then(() => { 
+        console.log("associado cadastrado");
+      });
+
+
+    await rtdb.ref('protocolos/' + protocolo).set({
+        data: formatedDate,
+        associado: cpf,
+        documentos,
+        terceiros: []
+      }).then(() => { 
+        console.log("protocolo cadastrado");
+      });
+    
+    for(let i = 0; i<documentos.length; i++){
+      let idObject = protocolo + "_" + documentos[i].nome_do_arquivo;
+
+      switch (documentos[i].nome_do_arquivo) {
+        case "nome":
+          descricao_do_arquivo = "Nome do associado"
+          break;
+        
+        case "cpf": 
+          descricao_do_arquivo = "CPF do associado"
         break;
 
-      default:
-        descricao_do_arquivo = "documento não identificado"
-        break;
+        case "comprovante_residencia": 
+          descricao_do_arquivo = "comprovante de residência do associado"
+          break;
+
+        case "id_cnh": 
+          descricao_do_arquivo = "Identidade ou CNH do associado"
+          break;
+
+        case "cnh_condutor": 
+          descricao_do_arquivo = "CNH do condutor"
+          break; 
+
+        case "comprovante_residencia_condutor": 
+          descricao_do_arquivo = "Comprovante de residência do condutor"
+          break;
+
+        case "crv_veiculo": 
+          descricao_do_arquivo = "Documento de compra e venda do veículo"
+          break;
+
+        case "homologacao_kitgas": 
+          descricao_do_arquivo = "Documento de homologação do kitgás"
+          break;
+
+
+        case "registro_ocorrencia": 
+          descricao_do_arquivo = "Registro de ocorrência"
+          break;
+
+        default:
+          descricao_do_arquivo = "documento não identificado"
+          break;
+      }
+
+      await rtdb.ref('documentos/' + protocolo + "_doc" + i).set({
+        nome_do_arquivo: documentos[i].nome_do_arquivo,
+        extensao: documentos[i].extensao,
+        data_insercao: formatedDate,
+        descricao_do_arquivo,
+        protocolo
+      }).then(() => { 
+        console.log("documento " + documentos[i].nome_do_arquivo + " cadastrado");
+      });
     }
 
-    await rtdb.ref('documentos/' + protocolo + "_doc" + i).set({
-      nome_do_arquivo: documentos[i].nome_do_arquivo,
-      extensao: documentos[i].extensao,
-      data_insercao: formatedDate,
-      descricao_do_arquivo,
-      protocolo
-    }).then(() => { 
-      console.log("documento " + documentos[i].nome_do_arquivo + " cadastrado");
-    });
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "mail.ajasolucoesdigitais.com.br",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'no-reply@ajasolucoesdigitais.com.br', 
+      pass: '@21101988', 
+    },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false,
+    },
+  });
+
+  //configurando mensagem
+  let mensagem = {
+    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
+    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    subject: "Uma nova entrada (roubo ou furto) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
+    html: "Entrada de um roubo ou furto <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    attachments: documentosToSendInEmail
   }
 
-  res.redirect('/protocolo?protocolo=' + protocolo )
-});
-
-const uploadterceiro = multer({storage: storage})
-const cpUploadTerceiro = upload.fields([{name: 'comprovante_residencia_terceiro'}, {name: 'id_cnh_terceiro'}, {name: 'crv_carro_terceiro'}, {name: 'registro_ocorrencia_terceiro'}]);
-app.post('/uploadfilesterceiro', cpUploadTerceiro, async (req, res, next) =>{
-  // pegando variaveis de texto
-  let nome = req.body.nome_terceiro
-  let cpf = req.body.cpf_terceiro
-  let protocolo = req.body.protocolo_terceiro
-  let terceiros_previous = [];
-
-  let previousInfoFromProtocolos = null;
-
-  //pegando os dados armazenados em protocolo para poder atualizar posteriormente
-  await rtdb.ref("protocolos/" + protocolo)
-    .get()
-    .then(async (snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-        previousInfoFromProtocolos = await snapshot.val()
-        terceiros_previous = Object.hasOwn(previousInfoFromProtocolos, 'terceiros') ? [previousInfoFromProtocolos.terceiros] : [];
-      } else {
-        console.log("No data available");
+  // send mail with defined transport object
+  await transporter.sendMail(mensagem, 
+    function(err){
+      if(err){
+        console.log(err)
+      }else{
+        console.log("tudo certo")
       }
-    }).catch((error) => {
-      console.error(error);
     });
 
-  
-  // inserindo associado
-  await rtdb.ref('terceiros/' + cpf).set({
-    nome
-  }).then(() => { 
-    console.log("terceiro cadastrado");
+    res.redirect('/protocolo?protocolo=' + protocolo )
   });
 
-  await terceiros_previous.push(cpf)
+  // rota responsável por tratar os documentos da colisão
+  const uploadColisao = multer({storage: storage})
+  const cpUploadColisao = upload.fields([{name: 'comprovante_residencia_colisao'}, {name: 'id_cnh_colisao'}, {name: 'cnh_condutor_colisao'}, {name: 'crlv_carro_colisao'}, {name: 'homologacao_kitgas_colisao'}, {name: 'registro_ocorrencia_colisao'}]);
+  app.post('/uploadfilescolisao', cpUploadColisao, async (req, res, next) => { 
+
+    // pegando variaveis de texto
+    let nome = req.body.nome_colisao
+    let cpf = req.body.cpf_colisao
+  
+
+    // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
+    const char4 = cpf.substring(0,4);
+    const protocolo = await currentDate + char4;
 
 
-  if(previousInfoFromProtocolos){
-    previousInfoFromProtocolos.terceiros = await terceiros_previous
-  }else{
-    console.log("não é um objeto")
+    // variável que guarda o nome temporário dos arquivos - A ser utilizado no loop
+    let descricao_do_arquivo = ""
+
+
+    // inserindo associado
+    await rtdb.ref('associados/' + cpf).set({
+        nome
+      }).then(() => { 
+        console.log("associado cadastrado");
+      });
+
+
+    await rtdb.ref('protocolos/' + protocolo).set({
+        data: formatedDate,
+        associado: cpf,
+        documentos,
+        terceiros: []
+      }).then(() => { 
+        console.log("protocolo cadastrado");
+      });
+    
+
+    // loop para colocar os documentos no realtime database
+    for(let i = 0; i<documentos.length; i++){
+      let idObject = protocolo + "_" + documentos[i].nome_do_arquivo;
+
+      switch (documentos[i].nome_do_arquivo) {
+        case "nome":
+          descricao_do_arquivo = "Nome do associado"
+          break;
+        
+        case "cpf": 
+          descricao_do_arquivo = "CPF do associado"
+        break;
+
+        case "comprovante_residencia": 
+          descricao_do_arquivo = "comprovante de residência do associado"
+          break;
+
+        case "id_cnh": 
+          descricao_do_arquivo = "Identidade ou CNH do associado"
+          break;
+
+        case "crv_veiculo": 
+          descricao_do_arquivo = "Documento de compra e venda do veículo"
+          break;
+
+        case "homologacao_kitgas": 
+          descricao_do_arquivo = "Documento de homologação do kitgás"
+          break;
+
+
+        case "registro_ocorrencia": 
+          descricao_do_arquivo = "Registro de ocorrência"
+          break;
+
+        default:
+          descricao_do_arquivo = "documento não identificado"
+          break;
+      }
+
+      await rtdb.ref('documentos/' + protocolo + "_doc" + i).set({
+        nome_do_arquivo: documentos[i].nome_do_arquivo,
+        extensao: documentos[i].extensao,
+        data_insercao: formatedDate,
+        descricao_do_arquivo,
+        protocolo
+      }).then(() => { 
+        console.log("documento " + documentos[i].nome_do_arquivo + " cadastrado");
+      });
+    }
+
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "mail.ajasolucoesdigitais.com.br",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'no-reply@ajasolucoesdigitais.com.br', 
+      pass: '@21101988', 
+    },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false,
+    },
+  });
+
+  //configurando mensagem
+  let mensagem = {
+    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
+    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
+    html: "Entrada de colisão <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    attachments: documentosToSendInEmail
   }
- 
- 
-  await rtdb.ref('protocolos/' + protocolo).update({
-    "terceiros": terceiros_previous|
-  }).then(() => { 
-    console.log("terceiro atualizado");
+
+  // send mail with defined transport object
+  await transporter.sendMail(mensagem, 
+    function(err){
+      if(err){
+        console.log(err)
+      }else{
+        console.log("tudo certo")
+      }
+    });
+
+
+    res.redirect('/protocolo?protocolo=' + protocolo )
   });
 
- 
+  // roda responsável por tratar os documentos do terceiro
+  const uploadterceiro = multer({storage: storage})
+  const cpUploadTerceiro = upload.fields([{name: 'comprovante_residencia_terceiro'}, {name: 'id_cnh_terceiro'}, {name: 'crv_carro_terceiro'}, {name: 'registro_ocorrencia_terceiro'}]);
+  app.post('/uploadfilesterceiro', cpUploadTerceiro, async (req, res, next) =>{
+    // pegando variaveis de texto
+    let nome = req.body.nome_terceiro
+    let cpf = req.body.cpf_terceiro
+    let protocolo = req.body.protocolo_terceiro
+    let terceiros_previous = [];
 
-  // final return
-  res.json({
-    "message": "pelo menos chegou no envio do formulário :'("
-  })
+    let previousInfoFromProtocolos = null;
+
+    //pegando os dados armazenados em protocolo para poder atualizar posteriormente
+    await rtdb.ref("protocolos/" + protocolo)
+      .get()
+      .then(async (snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          previousInfoFromProtocolos = await snapshot.val()
+          terceiros_previous = Object.hasOwn(previousInfoFromProtocolos, 'terceiros') ? previousInfoFromProtocolos.terceiros : [];
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+
+    
+    // inserindo terceiro
+    await rtdb.ref('terceiros/' + cpf).set({
+      nome
+    }).then(() => { 
+      console.log("terceiro cadastrado");
+    });
+
+    await terceiros_previous.push(cpf)
+
+    if(previousInfoFromProtocolos){
+      previousInfoFromProtocolos.terceiros = await terceiros_previous
+    }else{
+      console.log("não é um objeto")
+    } 
   
-})
+    let updates = {}
+    updates['/protocolos/' + protocolo + "/terceiros"] = terceiros_previous;
 
-app.get('/protocolo', (req, res) => {
-  res.sendFile('protocolo.html', {root: __dirname + '/public/'})
-})
+    await rtdb.ref('/').update(updates).then(() => { 
+      console.log("terceiro atualizado");
+  });
+
+  
+  // create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    host: "mail.ajasolucoesdigitais.com.br",
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'no-reply@ajasolucoesdigitais.com.br', 
+      pass: '@21101988', 
+    },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false,
+    },
+  });
+
+  //configurando mensagem
+  let mensagem = {
+    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
+    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    subject: "Uma nova entrada (terceiro) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
+    html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    attachments: documentosToSendInEmail
+  }
+
+  // send mail with defined transport object
+  await transporter.sendMail(mensagem, 
+    function(err){
+      if(err){
+        console.log(err)
+      }else{
+        console.log("tudo certo")
+      }
+    });
+
+
+    // final return
+    res.redirect('/feedback-terceiro?protocolo=' + protocolo )
+    
+  })
+
+
+
+//rotas de feedback
+  //página apresentada após a entrada do roubo ou furto
+  app.get('/protocolo', (req, res) => {
+    res.sendFile('protocolo.html', {root: __dirname + '/public/'})
+  })
+
+  //página apresentada após a entrada do terceiro
+  app.get('/feedback-terceiro', (req, res) => {
+    res.sendFile('feedback-terceiro.html', {root: __dirname + '/public/'})
+  })
+
+
 
 
 // rotas do menu principal 
-app.get('/roubo-ou-furto', (req, res) => {
-  res.sendFile('entrada-roubo-furto.html', {root: __dirname + '/public/'})
-})
+  app.get('/roubo-ou-furto', (req, res) => {
+    res.sendFile('entrada-roubo-furto.html', {root: __dirname + '/public/'})
+  })
 
-// rotas do menu principal 
-app.get('/entrada-de-terceiro', (req, res) => {
-  res.sendFile('terceiro.html', {root: __dirname + '/public/'})
-})
+  app.get('/entrada-de-colisao', (req, res) => {
+    res.sendFile('entrada-colisao.html', {root: __dirname + '/public/'})
+  })
+
+  app.get('/entrada-de-terceiro', (req, res) => {
+    res.sendFile('terceiro.html', {root: __dirname + '/public/'})
+  })
+
+
+
+
 
 // feedbacks
 app.listen(port, () => {

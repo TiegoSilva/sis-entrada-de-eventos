@@ -17,6 +17,8 @@
             margin: 0px;
 
             width: 100vw;
+            max-width: 100vw ;
+
             height: 100vh;
 
             font-family: 'Exo 2';
@@ -86,6 +88,41 @@
             -webkit-transition: 0.5s all;
             cursor: pointer;
         }
+
+        @media (max-width: 860px){
+            html, body{
+                height: auto;
+                overflow-x: hidden;
+            }
+            main .opcoes { 
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+
+                width: 75%;
+                height: auto;
+                margin-top: 30px;
+                padding: 75px 0px;
+            
+                border-radius: 50px;
+                box-shadow: 5px 15px 15px rgba(0,0,0,0.2);
+
+                background-color: #fff;
+            }
+
+
+            main .opcoes .box-options{
+                flex-direction: column;
+                justify-content: space-between;
+                
+            }
+
+            main .opcoes .box-options .opcao{
+                margin: 10px auto;
+            }
+        }
         
     </style>
 </head>
@@ -95,7 +132,7 @@
         <div class="opcoes">
             <img src="./assets/logo.png" alt="logo RioBen " width="250px">
 
-            <h2>Faça a entrada do seu evento online</h2>
+            <h2 style="text-align: center;">Faça a entrada do seu evento online</h2>
 
             <div class="box-options">
                 <div class="opcao" onclick="window.open('./roubo-ou-furto', '_self')">
@@ -103,13 +140,14 @@
                     <h4>Roubo ou Furto</h4>
                 </div>
 
-                <div class="opcao">
+                
+                <div class="opcao" onclick="window.open('./entrada-de-colisao', '_self')">
                     <img src="./assets/colisao.png" alt="Colisão">
                     <h4>Colisão</h4>
                 </div>
 
-                <div class="opcao">
-                    <img src="./assets/terceiro.png" onclick="window.open('./entrada-de-terceiro', '_self')" alt="Terceiro">
+                <div class="opcao"  onclick="window.open('./entrada-de-terceiro', '_self')">
+                    <img src="./assets/terceiro.png" alt="Terceiro">
                     <h4>Terceiro</h4>
                 </div>
             </div>
