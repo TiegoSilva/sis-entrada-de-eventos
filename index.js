@@ -84,6 +84,7 @@ let storage = multer.diskStorage(
     // pegando variaveis de texto
     let nome = req.body.nome
     let cpf = req.body.cpf
+    let telefone = req.body.telefone
     let local_date_time = req.body.hora_ocorrencia
     let descricao_ocorrencia = req.body.descricao_ocorrencia
   
@@ -99,7 +100,8 @@ let storage = multer.diskStorage(
 
     // inserindo associado
     await rtdb.ref('associados/' + cpf).set({
-        nome
+        nome,
+        telefone
       }).then(() => { 
         console.log("associado cadastrado");
       });
@@ -188,12 +190,20 @@ let storage = multer.diskStorage(
     },
   });
 
+
   //configurando mensagem
+  let htmlBody = "Entrada de um roubo ou furto <br /><br /> " + 
+    "Nome: " + nome + "<br />" +  
+    "CPF: " + cpf + "<br />" + 
+    "Telefone para contato: " + telefone + "<br />" +
+    "Data da ocorrência: " + local_date_time + "<br />" + 
+    "Descrição do evento: " + descricao_ocorrencia + "";
+
   let mensagem = {
     from: "no-reply@ajasolucoesdigitais.com.br", // sender address
     to: "programador@ajasolucoesdigitais.com.br", // list of receivers
     subject: "Uma nova entrada (roubo ou furto) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Entrada de um roubo ou furto <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />" + "data da ocorrência: " + local_date_time + "<br /> " + "Descrição do evento: " + descricao_ocorrencia, // html body
+    html: htmlBody, // html body
     attachments: documentosToSendInEmail
   }
 
@@ -218,6 +228,7 @@ let storage = multer.diskStorage(
     // pegando variaveis de texto
     let nome = req.body.nome_colisao
     let cpf = req.body.cpf_colisao
+    let telefone = req.body.telefone_colisao
     let local_date_time = req.body.hora_ocorrencia_colisao
     let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
   
@@ -233,7 +244,8 @@ let storage = multer.diskStorage(
 
     // inserindo associado
     await rtdb.ref('associados/' + cpf).set({
-        nome
+        nome,
+        telefone
       }).then(() => { 
         console.log("associado cadastrado");
       });
@@ -317,11 +329,18 @@ let storage = multer.diskStorage(
   });
 
   //configurando mensagem
+  //configurando mensagem
+  let htmlBody = "Entrada de um roubo ou furto <br /><br /> " + 
+    "Nome: " + nome + "<br />" +  
+    "CPF: " + cpf + "<br />" + 
+    "Telefone para contato: " + telefone + "<br />" +
+    "Data da ocorrência: " + local_date_time + "<br />" + 
+    "Descrição do evento: " + descricao_ocorrencia + "";
   let mensagem = {
     from: "no-reply@ajasolucoesdigitais.com.br", // sender address
     to: "programador@ajasolucoesdigitais.com.br", // list of receivers
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Entrada de colisão <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />" + "data da ocorrência: " + local_date_time + "<br /> " + "Descrição do evento: " + descricao_ocorrencia, // html body
+    html: htmlBody,
     attachments: documentosToSendInEmail
   }
 
@@ -346,6 +365,7 @@ let storage = multer.diskStorage(
     // pegando variaveis de texto
     let nome = req.body.nome_terceiro
     let cpf = req.body.cpf_terceiro
+    let telefone = req.body.telefone_terceiro
     let protocolo = req.body.protocolo_terceiro
     let terceiros_previous = [];
 
@@ -369,7 +389,8 @@ let storage = multer.diskStorage(
     
     // inserindo terceiro
     await rtdb.ref('terceiros/' + cpf).set({
-      nome
+      nome,
+      telefone
     }).then(() => { 
       console.log("terceiro cadastrado");
     });
@@ -410,7 +431,7 @@ let storage = multer.diskStorage(
     from: "no-reply@ajasolucoesdigitais.com.br", // sender address
     to: "programador@ajasolucoesdigitais.com.br", // list of receivers
     subject: "Uma nova entrada (terceiro) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />Telefone para contato: " + telefone + "<br />", // html body
     attachments: documentosToSendInEmail
   }
 
