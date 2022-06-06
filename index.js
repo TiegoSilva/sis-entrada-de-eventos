@@ -193,7 +193,7 @@ let storage = multer.diskStorage(
     from: "no-reply@ajasolucoesdigitais.com.br", // sender address
     to: "programador@ajasolucoesdigitais.com.br", // list of receivers
     subject: "Uma nova entrada (roubo ou furto) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Entrada de um roubo ou furto <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    html: "Entrada de um roubo ou furto <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />" + "data da ocorrência: " + local_date_time + "<br /> " + "Descrição do evento: " + descricao_ocorrencia, // html body
     attachments: documentosToSendInEmail
   }
 
@@ -321,7 +321,7 @@ let storage = multer.diskStorage(
     from: "no-reply@ajasolucoesdigitais.com.br", // sender address
     to: "programador@ajasolucoesdigitais.com.br", // list of receivers
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Entrada de colisão <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf, // html body
+    html: "Entrada de colisão <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />" + "data da ocorrência: " + local_date_time + "<br /> " + "Descrição do evento: " + descricao_ocorrencia, // html body
     attachments: documentosToSendInEmail
   }
 
