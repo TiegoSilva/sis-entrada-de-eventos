@@ -201,13 +201,25 @@
                     <label for="registro_ocorrencia" class="form-label">Cópia do Registro de ocorrência</label>
                     <input type="file" name="registro_ocorrencia" class="form-control" id="registro_ocorrencia" required/>
                   </div>
+                  <div class="col-md-6">
+                    <label for="hora_ocorrencia" class="form-label">Hora da ocorrência</label>
+                    <input type="datetime-local" name="hora_ocorrencia" class="form-control" id="hora_ocorrencia" required/>
+                  </div>
                 </div>
 
+              <div class="row" style="margin-top: 16px;">  
+                <div class="col-md-12">
+                  <label for="descricao_ocorrencia" class="form-label">Descreva a ocorrência</label>
+                  <textarea name="descricao_ocorrencia" class="form-control" id="descricao_ocorrencia" placeholder="Descreva a ocorrencia com detalhes"></textarea>
+                </div>
+              </div>
                 <div class="row" style="margin-top: 16px;">
                     <div class="col-md-12">
                         <input type="submit" value="Enviar" class="btn btn-lg btn-primary" />
                     </div>
                 </div>
+
+                
             </form>
         </div>
       </div>

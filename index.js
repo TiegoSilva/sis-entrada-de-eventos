@@ -84,6 +84,8 @@ let storage = multer.diskStorage(
     // pegando variaveis de texto
     let nome = req.body.nome
     let cpf = req.body.cpf
+    let local_date_time = req.body.hora_ocorrencia
+    let descricao_ocorrencia = req.body.descricao_ocorrencia
   
 
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
@@ -107,7 +109,9 @@ let storage = multer.diskStorage(
         data: formatedDate,
         associado: cpf,
         documentos,
-        terceiros: []
+        terceiros: [],
+        dataOcorrencia: local_date_time,
+        descricaoOcorrencia: descricao_ocorrencia
       }).then(() => { 
         console.log("protocolo cadastrado");
       });
@@ -214,6 +218,8 @@ let storage = multer.diskStorage(
     // pegando variaveis de texto
     let nome = req.body.nome_colisao
     let cpf = req.body.cpf_colisao
+    let local_date_time = req.body.hora_ocorrencia_colisao
+    let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
   
 
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
@@ -237,7 +243,9 @@ let storage = multer.diskStorage(
         data: formatedDate,
         associado: cpf,
         documentos,
-        terceiros: []
+        terceiros: [],
+        dataOcorrencia: local_date_time,
+        descricaoOcorrencia: descricao_ocorrencia
       }).then(() => { 
         console.log("protocolo cadastrado");
       });
