@@ -47,7 +47,7 @@ app.get('/', (req, res) => {
 // managing storage 
 let diretorio = __dirname + '/uploads/';
 const currentDate = Date.now();
-const formatedDate = new Date()
+const formatedDate = new Date();
 
 let documentos = [];
 let documentosToSendInEmail = []
@@ -85,6 +85,7 @@ let storage = multer.diskStorage(
     let nome = req.body.nome
     let cpf = req.body.cpf
     let telefone = req.body.telefone
+    let email = req.body.email
     let local_date_time = req.body.hora_ocorrencia
     let descricao_ocorrencia = req.body.descricao_ocorrencia
   
@@ -101,7 +102,8 @@ let storage = multer.diskStorage(
     // inserindo associado
     await rtdb.ref('associados/' + cpf).set({
         nome,
-        telefone
+        telefone,
+        email
       }).then(() => { 
         console.log("associado cadastrado");
       });
@@ -229,6 +231,7 @@ let storage = multer.diskStorage(
     let nome = req.body.nome_colisao
     let cpf = req.body.cpf_colisao
     let telefone = req.body.telefone_colisao
+    let email = req.body.email_colisao
     let local_date_time = req.body.hora_ocorrencia_colisao
     let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
   
@@ -245,7 +248,8 @@ let storage = multer.diskStorage(
     // inserindo associado
     await rtdb.ref('associados/' + cpf).set({
         nome,
-        telefone
+        telefone,
+        email
       }).then(() => { 
         console.log("associado cadastrado");
       });
@@ -366,6 +370,7 @@ let storage = multer.diskStorage(
     let nome = req.body.nome_terceiro
     let cpf = req.body.cpf_terceiro
     let telefone = req.body.telefone_terceiro
+    let email = req.body.email_terceiro
     let protocolo = req.body.protocolo_terceiro
     let terceiros_previous = [];
 
@@ -390,7 +395,8 @@ let storage = multer.diskStorage(
     // inserindo terceiro
     await rtdb.ref('terceiros/' + cpf).set({
       nome,
-      telefone
+      telefone,
+      email
     }).then(() => { 
       console.log("terceiro cadastrado");
     });
@@ -450,8 +456,6 @@ let storage = multer.diskStorage(
     res.redirect('/feedback-terceiro?protocolo=' + protocolo )
     
   })
-
-
 
 //rotas de feedback
   //página apresentada após a entrada do roubo ou furto
