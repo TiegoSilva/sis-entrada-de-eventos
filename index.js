@@ -179,12 +179,12 @@ let storage = multer.diskStorage(
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "mail.ajasolucoesdigitais.com.br",
+    host: "mail.gestaogma.com.br",
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'no-reply@ajasolucoesdigitais.com.br', 
-      pass: '@21101988', 
+      user: 'no-reply@gestaogma.com.br', 
+      pass: '@Gma123456', 
     },
     tls: {
       // do not fail on invalid certs
@@ -202,8 +202,8 @@ let storage = multer.diskStorage(
     "Descrição do evento: " + descricao_ocorrencia + "";
 
   let mensagem = {
-    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
-    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    from: "no-reply@gestaogma.com.br", // sender address
+    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
     subject: "Uma nova entrada (roubo ou furto) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody, // html body
     attachments: documentosToSendInEmail
@@ -319,12 +319,12 @@ let storage = multer.diskStorage(
 
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "mail.ajasolucoesdigitais.com.br",
+    host: "mail.gestaogma.com.br",
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'no-reply@ajasolucoesdigitais.com.br', 
-      pass: '@21101988', 
+      user: 'no-reply@gestaogma.com.br', 
+      pass: '@Gma123456', 
     },
     tls: {
       // do not fail on invalid certs
@@ -341,8 +341,8 @@ let storage = multer.diskStorage(
     "Data da ocorrência: " + local_date_time + "<br />" + 
     "Descrição do evento: " + descricao_ocorrencia + "";
   let mensagem = {
-    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
-    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    from: "no-reply@gestaogma.com.br", // sender address
+    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody,
     attachments: documentosToSendInEmail
@@ -419,12 +419,12 @@ let storage = multer.diskStorage(
   
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "mail.ajasolucoesdigitais.com.br",
+    host: "mail.gestaogma.com.br",
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-      user: 'no-reply@ajasolucoesdigitais.com.br', 
-      pass: '@21101988', 
+      user: 'no-reply@gestaogma.com.br	', 
+      pass: '@Gma123456', 
     },
     tls: {
       // do not fail on invalid certs
@@ -434,8 +434,8 @@ let storage = multer.diskStorage(
 
   //configurando mensagem
   let mensagem = {
-    from: "no-reply@ajasolucoesdigitais.com.br", // sender address
-    to: "programador@ajasolucoesdigitais.com.br", // list of receivers
+    from: "no-reply@gestaogma.com.br", // sender address
+    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
     subject: "Uma nova entrada (terceiro) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />Telefone para contato: " + telefone + "<br />", // html body
     attachments: documentosToSendInEmail
