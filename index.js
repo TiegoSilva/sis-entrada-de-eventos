@@ -100,7 +100,9 @@ let storage = multer.diskStorage(
 
 
     // inserindo associado
-    await rtdb.ref('associados/' + cpf).set({
+    let cpfKey = await cpf.replaceAll(".", "");
+    cpfKey = await cpfKey.replaceAll("-", "");
+    await rtdb.ref('associados/' + cpfKey).set({
         nome,
         telefone,
         email
@@ -108,8 +110,8 @@ let storage = multer.diskStorage(
         console.log("associado cadastrado");
       });
 
-
-    await rtdb.ref('protocolos/' + protocolo).set({
+    let protocoloKey = await protocolo.replace(".", "")
+    await rtdb.ref('protocolos/' + protocoloKey).set({
         data: formatedDate,
         associado: cpf,
         documentos,
@@ -166,7 +168,7 @@ let storage = multer.diskStorage(
           break;
       }
 
-      await rtdb.ref('documentos/' + protocolo + "_doc" + i).set({
+      await rtdb.ref('documentos/' + protocoloKey + "_doc" + i).set({
         nome_do_arquivo: documentos[i].nome_do_arquivo,
         extensao: documentos[i].extensao,
         data_insercao: formatedDate,
@@ -246,7 +248,10 @@ let storage = multer.diskStorage(
 
 
     // inserindo associado
-    await rtdb.ref('associados/' + cpf).set({
+    let cpfKey = await cpf.replaceAll(".", "");
+    cpfKey = await cpfKey.replaceAll("-", "");
+    
+    await rtdb.ref('associados/' + cpfKey).set({
         nome,
         telefone,
         email
@@ -254,8 +259,8 @@ let storage = multer.diskStorage(
         console.log("associado cadastrado");
       });
 
-
-    await rtdb.ref('protocolos/' + protocolo).set({
+    let protocoloKey = await protocolo.replace(".", "")
+    await rtdb.ref('protocolos/' + protocoloKey).set({
         data: formatedDate,
         associado: cpf,
         documentos,
@@ -269,7 +274,7 @@ let storage = multer.diskStorage(
 
     // loop para colocar os documentos no realtime database
     for(let i = 0; i<documentos.length; i++){
-      let idObject = protocolo + "_" + documentos[i].nome_do_arquivo;
+      let idObject = protocoloKey + "_" + documentos[i].nome_do_arquivo;
 
       switch (documentos[i].nome_do_arquivo) {
         case "nome":
@@ -306,7 +311,7 @@ let storage = multer.diskStorage(
           break;
       }
 
-      await rtdb.ref('documentos/' + protocolo + "_doc" + i).set({
+      await rtdb.ref('documentos/' + protocoloKey + "_doc" + i).set({
         nome_do_arquivo: documentos[i].nome_do_arquivo,
         extensao: documentos[i].extensao,
         data_insercao: formatedDate,
@@ -338,8 +343,10 @@ let storage = multer.diskStorage(
     "Nome: " + nome + "<br />" +  
     "CPF: " + cpf + "<br />" + 
     "Telefone para contato: " + telefone + "<br />" +
+    "E-mail para contato: " + email + "<br />" +
     "Data da ocorrência: " + local_date_time + "<br />" + 
     "Descrição do evento: " + descricao_ocorrencia + "";
+
   let mensagem = {
     from: "no-reply@gestaogma.com.br", // sender address
     to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
@@ -377,7 +384,8 @@ let storage = multer.diskStorage(
     let previousInfoFromProtocolos = null;
 
     //pegando os dados armazenados em protocolo para poder atualizar posteriormente
-    await rtdb.ref("protocolos/" + protocolo)
+    let protocoloKey = await protocolo.replace(".", "")
+    await rtdb.ref("protocolos/" + protocoloKey)
       .get()
       .then(async (snapshot) => {
         if (snapshot.exists()) {
@@ -393,7 +401,7 @@ let storage = multer.diskStorage(
 
     
     // inserindo terceiro
-    await rtdb.ref('terceiros/' + cpf).set({
+    await rtdb.ref('terceiros/' + cpf.replace(".", "")).set({
       nome,
       telefone,
       email
@@ -410,7 +418,7 @@ let storage = multer.diskStorage(
     } 
   
     let updates = {}
-    updates['/protocolos/' + protocolo + "/terceiros"] = terceiros_previous;
+    updates['/protocolos/' + protocoloKey + "/terceiros"] = terceiros_previous;
 
     await rtdb.ref('/').update(updates).then(() => { 
       console.log("terceiro atualizado");
