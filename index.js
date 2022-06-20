@@ -226,7 +226,7 @@ let storage = multer.diskStorage(
 
   // rota responsável por tratar os documentos da colisão
   const uploadColisao = multer({storage: storage})
-  const cpUploadColisao = upload.fields([{name: 'comprovante_residencia_colisao'}, {name: 'id_cnh_colisao'}, {name: 'cnh_condutor_colisao'}, {name: 'crlv_carro_colisao'}, {name: 'homologacao_kitgas_colisao'}, {name: 'registro_ocorrencia_colisao'}]);
+  const cpUploadColisao = upload.fields([{name: 'comprovante_residencia_colisao'}, {name: 'id_cnh_colisao'}, {name: 'cnh_condutor_colisao'}, {name: 'comprovante_residencia_condutor_colisao'}, {name: 'crlv_carro_colisao'}, {name: 'homologacao_kitgas_colisao'}, {name: 'registro_ocorrencia_colisao'}]);
   app.post('/uploadfilescolisao', cpUploadColisao, async (req, res, next) => { 
 
     // pegando variaveis de texto
@@ -283,7 +283,7 @@ let storage = multer.diskStorage(
         
         case "cpf": 
           descricao_do_arquivo = "CPF do associado"
-        break;
+          break;
 
         case "comprovante_residencia": 
           descricao_do_arquivo = "comprovante de residência do associado"
@@ -301,9 +301,17 @@ let storage = multer.diskStorage(
           descricao_do_arquivo = "Documento de homologação do kitgás"
           break;
 
-
         case "registro_ocorrencia": 
           descricao_do_arquivo = "Registro de ocorrência"
+          break;
+
+        
+        case "cnh_condutor_colisao": 
+          descricao_do_arquivo = "CNH do Condutor"
+          break;
+        
+        case "comprovante_residencia_condutor_colisao": 
+          descricao_do_arquivo = "Comprovante de residencia do condutor"
           break;
 
         default:
