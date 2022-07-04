@@ -236,6 +236,8 @@ let storage = multer.diskStorage(
     let email = req.body.email_colisao
     let local_date_time = req.body.hora_ocorrencia_colisao
     let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
+    let descricao_danos_colisao = req.body.descricao_danos_colisao
+    let natureza_do_evento = req.body.natureza_do_evento
   
 
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
@@ -266,7 +268,8 @@ let storage = multer.diskStorage(
         documentos,
         terceiros: [],
         dataOcorrencia: local_date_time,
-        descricaoOcorrencia: descricao_ocorrencia
+        descricaoOcorrencia: descricao_ocorrencia,
+        descricaoDanos: descricao_danos_colisao
       }).then(() => { 
         console.log("protocolo cadastrado");
       });
@@ -346,10 +349,10 @@ let storage = multer.diskStorage(
   });
 
   //configurando mensagem
-  //configurando mensagem
-  let htmlBody = "Entrada de um roubo ou furto <br /><br /> " + 
+  let htmlBody = "Entrada de uma colisão <br /><br /> " + 
     "Nome: " + nome + "<br />" +  
     "CPF: " + cpf + "<br />" + 
+    "Natureza do evento: " + natureza_do_evento + "<br />" +
     "Telefone para contato: " + telefone + "<br />" +
     "E-mail para contato: " + email + "<br />" +
     "Data da ocorrência: " + local_date_time + "<br />" + 
@@ -357,7 +360,7 @@ let storage = multer.diskStorage(
 
   let mensagem = {
     from: "no-reply@gestaogma.com.br", // sender address
-    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
+    to: "dev@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody,
     attachments: documentosToSendInEmail
@@ -387,6 +390,7 @@ let storage = multer.diskStorage(
     let telefone = req.body.telefone_terceiro
     let email = req.body.email_terceiro
     let protocolo = req.body.protocolo_terceiro
+    let danos_terceiro = req.body.descricao_danos_terceiro
     let terceiros_previous = [];
 
     let previousInfoFromProtocolos = null;
@@ -412,7 +416,8 @@ let storage = multer.diskStorage(
     await rtdb.ref('terceiros/' + cpf.replace(".", "")).set({
       nome,
       telefone,
-      email
+      email,
+      danos_terceiro
     }).then(() => { 
       console.log("terceiro cadastrado");
     });
