@@ -76,7 +76,7 @@ let storage = multer.diskStorage(
 )
 
 //rotas de gerenciamento de arquivos
-  // rota responsável por tratar os documentos do rouvo ou furto
+  // rota responsável por tratar os documentos do roubo ou furto
   const upload = multer({storage: storage})
   const cpUpload = upload.fields([{name: 'comprovante_residencia'}, {name: 'id_cnh'}, {name: 'cnh_condutor'}, {name: 'comprovante_residencia_condutor'}, {name: 'crv_carro'}, {name: 'homologacao_kitgas'}, {name: 'registro_ocorrencia'}]);
   app.post('/uploadfiles', cpUpload, async (req, res, next) => { 
@@ -238,6 +238,7 @@ let storage = multer.diskStorage(
     let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
     let descricao_danos_colisao = req.body.descricao_danos_colisao
     let natureza_do_evento = req.body.natureza_do_evento
+    let descricao_acidente_colisao = req.body.descricao_acidente_colisao
   
 
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
@@ -269,7 +270,8 @@ let storage = multer.diskStorage(
         terceiros: [],
         dataOcorrencia: local_date_time,
         descricaoOcorrencia: descricao_ocorrencia,
-        descricaoDanos: descricao_danos_colisao
+        descricaoDanos: descricao_danos_colisao,
+        descricaoAcidente: descricao_acidente_colisao
       }).then(() => { 
         console.log("protocolo cadastrado");
       });
@@ -356,11 +358,14 @@ let storage = multer.diskStorage(
     "Telefone para contato: " + telefone + "<br />" +
     "E-mail para contato: " + email + "<br />" +
     "Data da ocorrência: " + local_date_time + "<br />" + 
-    "Descrição do evento: " + descricao_ocorrencia + "";
+    "Descrição do evento: " + descricao_ocorrencia + "<br />" + 
+    "descrição das avarias: " + descricao_danos_colisao + "<br />" + 
+    "Descrição do acidente: " + descricao_acidente_colisao + ".";
+
 
   let mensagem = {
     from: "no-reply@gestaogma.com.br", // sender address
-    to: "dev@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
+    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody,
     attachments: documentosToSendInEmail
@@ -391,6 +396,7 @@ let storage = multer.diskStorage(
     let email = req.body.email_terceiro
     let protocolo = req.body.protocolo_terceiro
     let danos_terceiro = req.body.descricao_danos_terceiro
+    let descricao_acidente_terceiro = req.body.descricao_acidente_terceiro
     let terceiros_previous = [];
 
     let previousInfoFromProtocolos = null;
@@ -417,7 +423,8 @@ let storage = multer.diskStorage(
       nome,
       telefone,
       email,
-      danos_terceiro
+      danos_terceiro,
+      descricao_acidente_terceiro
     }).then(() => { 
       console.log("terceiro cadastrado");
     });
@@ -458,7 +465,7 @@ let storage = multer.diskStorage(
     from: "no-reply@gestaogma.com.br", // sender address
     to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers
     subject: "Uma nova entrada (terceiro) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
-    html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />Telefone para contato: " + telefone + "<br />", // html body
+    html: "Uma nova entrada de terceiro foi realizada <br /><br /> Nome: " + nome + "<br /> CPF: " + cpf + "<br />Telefone para contato: " + telefone + "<br /><br />" + "Descrição do acidente: " + descricao_acidente_terceiro + "<br><br>" + "Descrição dos danos: " + danos_terceiro + "", // html body
     attachments: documentosToSendInEmail
   }
 
