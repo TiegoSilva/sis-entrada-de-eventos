@@ -87,7 +87,7 @@ let storage = multer.diskStorage(
     let telefone = req.body.telefone
     let email = req.body.email
     let local_date_time = req.body.hora_ocorrencia
-    let descricao_ocorrencia = req.body.descricao_ocorrencia
+    let descricao_ocorrencia = req.body.descricao_ocorrencia ? req.body.descricao_ocorrencia  : ""
   
 
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
@@ -235,7 +235,7 @@ let storage = multer.diskStorage(
     let telefone = req.body.telefone_colisao
     let email = req.body.email_colisao
     let local_date_time = req.body.hora_ocorrencia_colisao
-    let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao
+    let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao  ? descricao_ocorrencia_colisao  : ""
     let descricao_danos_colisao = req.body.descricao_danos_colisao
     let natureza_do_evento = req.body.natureza_do_evento
     let descricao_acidente_colisao = req.body.descricao_acidente_colisao
@@ -397,7 +397,7 @@ let storage = multer.diskStorage(
     let protocolo = req.body.protocolo_terceiro
     let danos_terceiro = req.body.descricao_danos_terceiro
     let descricao_acidente_terceiro = req.body.descricao_acidente_terceiro
-    let descricao_ocorrencia_terceiro = req.body.descricao_ocorrencia_terceiro
+    let descricao_ocorrencia_terceiro = req.body.descricao_ocorrencia_terceiro ? descricao_ocorrencia_terceiro  : ""
     let terceiros_previous = [];
 
     let previousInfoFromProtocolos = null;
