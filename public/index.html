@@ -68,8 +68,8 @@
             justify-content: center;
             align-items: center;
 
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
 
             margin: auto 20px;
 
@@ -87,6 +87,10 @@
             transition: 0.5s all;
             -webkit-transition: 0.5s all;
             cursor: pointer;
+        }
+
+        main .opcoes .box-options .opcao img{
+            max-width: 50px;
         }
 
         @media (max-width: 860px){
@@ -137,18 +141,23 @@
             <div class="box-options">
                 <div class="opcao" onclick="window.open('./roubo-ou-furto', '_self')">
                     <img src="./assets/roubo-furto.png" alt="Roubo ou furto">
-                    <h4>Roubo ou Furto</h4>
+                    <h5>Roubo ou Furto</h5>
                 </div>
 
                 
                 <div class="opcao" onclick="window.open('./entrada-de-colisao', '_self')">
                     <img src="./assets/colisao.png" alt="Colisão">
-                    <h4 style="text-align: center;">Colisão, fenômenos da natureza e incêndio</h4>
+                    <h5 style="text-align: center;">Colisão, fenômenos da natureza e incêndio</h5>
                 </div>
 
                 <div class="opcao"  onclick="window.open('./entrada-de-terceiro', '_self')">
                     <img src="./assets/terceiro.png" alt="Terceiro">
-                    <h4>Terceiro</h4>
+                    <h5>Terceiro</h5>
+                </div>
+
+                <div class="opcao"  onclick="window.open('http://rioben.org.br', '_self')">
+                    <img src="./assets/botao-voltar.png" alt="Ir para o site rioben">
+                    <h5>Voltar para o site</h5>
                 </div>
             </div>
 
