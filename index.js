@@ -396,10 +396,14 @@ let storage = multer.diskStorage(
     let email = req.body.email_terceiro
     let protocolo = req.body.protocolo_terceiro
     let danos_terceiro = req.body.descricao_danos_terceiro
-    let descricao_ocorrencia_terceiro = req.body.descricao_ocorrencia_terceiro ? descricao_ocorrencia_terceiro  : ""
+    let descricao_ocorrencia_terceiro = req.body.descricao_acidente_terceiro 
     let terceiros_previous = [];
 
     let previousInfoFromProtocolos = null;
+
+    // inserindo associado
+    let cpfKey = await cpf.replaceAll(".", "");
+    cpfKey = await cpfKey.replaceAll("-", "");
 
     //pegando os dados armazenados em protocolo para poder atualizar posteriormente
     let protocoloKey = await protocolo.replace(".", "")
@@ -419,7 +423,7 @@ let storage = multer.diskStorage(
 
     
     // inserindo terceiro
-    await rtdb.ref('terceiros/' + cpf.replace(".", "")).set({
+    await rtdb.ref('terceiros/' + cpfKey).set({
       nome,
       telefone,
       email,
@@ -479,22 +483,20 @@ let storage = multer.diskStorage(
       }
     });
 
-
     // final return
     res.redirect('/feedback-terceiro?protocolo=' + protocolo )
-    
-  })
+  });
 
 //rotas de feedback
   //página apresentada após a entrada do roubo ou furto
   app.get('/protocolo', (req, res) => {
     res.sendFile('protocolo.html', {root: __dirname + '/public/'})
-  })
+  });
 
   //página apresentada após a entrada do terceiro
   app.get('/feedback-terceiro', (req, res) => {
     res.sendFile('feedback-terceiro.html', {root: __dirname + '/public/'})
-  })
+  });
 
 
 
