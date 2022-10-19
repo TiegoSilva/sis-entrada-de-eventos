@@ -1,6 +1,11 @@
 const express = require('express');
-const res = require('express/lib/response');
 const app = express();
+
+const ejs = require('ejs')
+const fs = require('fs')
+const path = require('path')
+let html_to_pdf = require('html-pdf-node');
+// const pdfjs = require('pdfjs')
 
 
 // to permit requests from client side
@@ -16,7 +21,6 @@ const port = 3000;
 
 // Multer import
 const multer = require('multer');
-
 
 
 // firebase import
@@ -43,6 +47,7 @@ app.get('/', (req, res) => {
   res.send('index')
   
 });
+
 
 // managing storage 
 let diretorio = __dirname + '/uploads/';
@@ -73,7 +78,7 @@ let storage = multer.diskStorage(
       cb(null, filename_l)
     }
   }
-)
+);
 
 //rotas de gerenciamento de arquivos
   // rota responsável por tratar os documentos do roubo ou furto
@@ -236,19 +241,19 @@ let storage = multer.diskStorage(
     let email = req.body.email_colisao
     let local_date_time = req.body.hora_ocorrencia_colisao
     let descricao_ocorrencia = req.body.descricao_ocorrencia_colisao  ? descricao_ocorrencia_colisao  : ""
-    let descricao_danos_colisao = req.body.descricao_danos_colisao
+    let descricao_danos_colisao = req.body.descricao_danos_colisao //descricao avarias
     let natureza_do_evento = req.body.natureza_do_evento
-    let descricao_acidente_colisao = req.body.descricao_acidente_colisao
+    let descricao_acidente_colisao = req.body.descricao_acidente_colisao //descricao acidente
+    const timeElapsed = Date.now();
+    const dataDeHoje = new Date(timeElapsed);
+    const hoje = dataDeHoje.toLocaleDateString();
   
-
     // o protocolo é composto pelo timestamp da data corrente + 4 primeiros digitos do cpf
     const char4 = cpf.substring(0,4);
     const protocolo = await currentDate + char4;
 
-
     // variável que guarda o nome temporário dos arquivos - A ser utilizado no loop
     let descricao_do_arquivo = ""
-
 
     // inserindo associado
     let cpfKey = await cpf.replaceAll(".", "");
@@ -276,6 +281,39 @@ let storage = multer.diskStorage(
         console.log("protocolo cadastrado");
       });
     
+
+    //base para o diretório
+    let dirname2 = await __dirname + "/uploads/";
+    dirname2 = dirname2.replaceAll('\\', '/');
+    
+
+    //path para o diretório com arquivo
+      const img1 = dirname2 + documentosToSendInEmail[0]['filename'];
+      const img2 = dirname2 + documentosToSendInEmail[1]['filename'];
+      const img3 = dirname2 + documentosToSendInEmail[2]['filename'];
+      const img4 = dirname2 + documentosToSendInEmail[3]['filename'];
+      const img5 = dirname2 + documentosToSendInEmail[4]['filename'];
+      const img6 = dirname2 + documentosToSendInEmail[5]['filename'];
+      const img7 = dirname2 + documentosToSendInEmail[6]['filename'];
+
+
+    //template
+    const template = fs.readFileSync(path.resolve(__dirname, "./public/emailPDF.html"), 'utf8')
+    const content = ejs.render(template, {nome, cpf, telefone, email, data: hoje, img1, img2, img3, img4, img5, img6, img7, protocolo, descricaoAcidente: descricao_acidente_colisao, descricaoAvarias:descricao_danos_colisao, dataOcorrencia: local_date_time })
+    
+    const outputedEmailHTMLPath = await "./public/emailPDF_" + protocoloKey + ".html";
+    const outputedEmailPDFPath = await "./uploads/emailPDF_" + protocoloKey + ".pdf";
+    const url = await __dirname + outputedEmailHTMLPath;
+
+    console.log(url)
+    await fs.writeFile(path.resolve(__dirname, outputedEmailHTMLPath), content, () => {
+      const outputName = "./uploads/emailPDF_" + protocoloKey + ".pdf"
+      const options = { format: 'A4', path: outputName}
+      const file = { url }
+      html_to_pdf.generatePdf(file, options)   
+    })
+
+    await documentosToSendInEmail.push({filename: protocoloKey + ".pdf", path: outputedEmailPDFPath});
 
     // loop para colocar os documentos no realtime database
     for(let i = 0; i<documentos.length; i++){
@@ -335,20 +373,20 @@ let storage = multer.diskStorage(
       });
     }
 
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: "mail.gestaogma.com.br",
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-      user: 'no-reply@gestaogma.com.br', 
-      pass: '@Gma123456', 
-    },
-    tls: {
-      // do not fail on invalid certs
-      rejectUnauthorized: false,
-    },
-  });
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      host: "mail.gestaogma.com.br",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: 'no-reply@gestaogma.com.br', 
+        pass: '@Gma123456', 
+      },
+      tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false,
+      },
+    });
 
   //configurando mensagem
   let htmlBody = "Entrada de uma colisão <br /><br /> " + 
@@ -365,7 +403,7 @@ let storage = multer.diskStorage(
 
   let mensagem = {
     from: "no-reply@gestaogma.com.br", // sender address
-    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
+    to: "dev@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody,
     attachments: documentosToSendInEmail
@@ -379,11 +417,12 @@ let storage = multer.diskStorage(
       }else{
         console.log("tudo certo")
       }
-    });
-
-
-    res.redirect('/protocolo?protocolo=' + protocolo )
   });
+
+  // final return
+  res.redirect('/protocolo?protocolo=' + protocolo )
+  
+});
 
   // roda responsável por tratar os documentos do terceiro
   const uploadterceiro = multer({storage: storage})
@@ -500,7 +539,6 @@ let storage = multer.diskStorage(
 
 
 
-
 // rotas do menu principal 
   app.get('/roubo-ou-furto', (req, res) => {
     res.sendFile('entrada-roubo-furto.html', {root: __dirname + '/public/'})
@@ -515,7 +553,10 @@ let storage = multer.diskStorage(
   })
 
 
-
+  //pdf sign
+  app.get('/emailPdf', (req, res) => {
+    res.sendFile('emailPdf.html', {root: __dirname + '/public/'})
+  });
 
 
 // feedbacks
