@@ -403,7 +403,7 @@ let storage = multer.diskStorage(
 
   let mensagem = {
     from: "no-reply@gestaogma.com.br", // sender address
-    to: "dev@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
+    to: "eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br",  // list of receivers eventos2@gestaogma.com.br, eventos@gestaogma.com.br, assistenteeventos@gestaogma.com.br
     subject: "Uma nova entrada (colisão) no eventos foi realizada. Protocolo: " + protocolo, // Subject line
     html: htmlBody,
     attachments: documentosToSendInEmail
