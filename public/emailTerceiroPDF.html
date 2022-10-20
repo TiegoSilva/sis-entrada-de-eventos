@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang='pt-br'>
+<head>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Formulário de eventos</title>
+
+    <link rel="stylesheet" href="./assets/css/style-pdf.css" type='text/css'>
+</head>
+<body>
+
+  <header style='width: 80%; margin: auto 10%; display: flex; justify-content: center; align-items: center; background-color: #003b75; padding: 20px 0px; border: 2px solid #003b75;'>
+    <img src='./assets/logo_rioben_azul.png' width='150' height='52' alt='logo-rioben'>
+  </header>
+  <main style='width: 80%; margin: auto 10%; border: 2px solid #003b75;'>
+    <table style='border: none; width: 95%; margin: auto 2.5%;'>
+        <tr style='border: none;'>
+            <td style='border: none; padding: 7px 0px;'><b>Data:</b> <%=data%></td>
+            <td style='border: none; padding: 7px 0px;'><b>Número de protocolo:</b> <%=protocolo%></td>
+        </tr>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;' colspan='2'><b>Associação:</b> RioBen Proteção Veicular</td>
+        </tr>
+    </table>
+
+    <div class="row-title">
+        ASSOCIADO
+    </div>
+    <table style='border: none; width: 95%; margin: auto 2.5%;'>
+        <tr style='border: none;'>
+            <td style='border: none; padding: 7px 0px;'><b>Nome:</b> <br /><%=nome%></td>
+            <td style='border: none; padding: 7px 0px;'><b>CPF:</b> <br /><%=cpf%></td>
+        </tr>
+        <tr>
+            <td style='border: none; padding: 7px 0px;'><b>Telefone:</b> <br /><%=telefone%></td>
+            <td style='border: none; padding: 7px 0px;'><b>E-mail:</b> <br /><%=email%></td>
+        </tr>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;'><b>Cópia da CNH ou Identidade:</b></td>
+            <td style='border: none; padding: 7px 0px;'><b>Comprovante de Residencia</b></td>
+        </tr>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;'>
+                <img src=<%=img2%> width='280px'>
+            </td>
+            <td style='border: none; padding: 7px 0px;''>
+                <img src=<%=img1%> width='280px'>
+            </td>
+        </tr>
+
+
+    </table>
+
+
+
+    <div style='width: 100%; background-color: #003b75; font-size: 24px; color: #000; font-weight: bold; text-align: center; margin-top: 40px; padding: 12px 0px;'>
+        DOCUMENTOS DO VEÍCULO
+    </div>
+    <table style='border: none; width: 95%; margin: auto 2.5%;'>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;'><b>CRV:</b></td>
+        </tr>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;'>
+                <img src=<%=img3%> width='280px'>
+            </td>
+        </tr>
+    </table>
+
+
+    <div style='width: 100%; background-color: #003b75; font-size: 24px; color: #000; font-weight: bold; text-align: center; margin-top: 40px; padding: 12px 0px;'>
+        REGISTRO DA OCORRÊNCIA
+    </div>
+    <table style='border: none; width: 95%; margin: auto 2.5%;'>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px; border-bottom: 1px solid #313131;'>
+                <b>Descrição das avarias:</b><br />
+                <%=descricaoAvarias%>
+            </td>
+            <td style='border: none; padding: 7px 0px; border-bottom: 1px solid #313131;'>
+                <b>Descrição do acidente:</b><br/>
+                <%=descricaoAcidente%>
+            </td>
+        </tr>
+        <tr style='border: none; margin-top: 14px;'>
+            <td style='border: none; padding: 7px 0px;'>
+                <b>BRAT:</b><br />
+                <img src=<%=img4%> width='280px'>
+            </td>
+        </tr>
+    </table>
+  </main>
+    
+</body>
+</html>

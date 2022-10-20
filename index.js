@@ -437,6 +437,9 @@ let storage = multer.diskStorage(
     let danos_terceiro = req.body.descricao_danos_terceiro
     let descricao_ocorrencia_terceiro = req.body.descricao_acidente_terceiro 
     let terceiros_previous = [];
+    const timeElapsed = Date.now();
+    const dataDeHoje = new Date(timeElapsed);
+    const hoje = dataDeHoje.toLocaleDateString();
 
     let previousInfoFromProtocolos = null;
 
@@ -480,6 +483,37 @@ let storage = multer.diskStorage(
       console.log("não é um objeto")
     } 
   
+
+    //base para o diretório
+    let dirname2 = await __dirname + "/uploads/";
+    dirname2 = dirname2.replaceAll('\\', '/');
+    
+
+    //path para o diretório com arquivo
+      const img1 = dirname2 + documentosToSendInEmail[0]['filename'];
+      const img2 = dirname2 + documentosToSendInEmail[1]['filename'];
+      const img3 = dirname2 + documentosToSendInEmail[2]['filename'];
+      const img4 = dirname2 + documentosToSendInEmail[3]['filename'];
+
+
+    //template
+    const template = fs.readFileSync(path.resolve(__dirname, "./public/emailTerceiroPDF.html"), 'utf8')
+    const content = ejs.render(template, {nome, cpf, telefone, email, data: hoje, img1, img2, img3, img4, protocolo, descricaoAcidente: descricao_ocorrencia_terceiro, descricaoAvarias: danos_terceiro })
+    
+    const outputedEmailHTMLPath = await "./public/emailTerceiroPDF_" + protocoloKey + ".html";
+    const outputedEmailPDFPath = await "./uploads/emailTerceiroPDF_" + protocoloKey + ".pdf";
+    const url = await __dirname + outputedEmailHTMLPath;
+
+    console.log(url)
+    await fs.writeFile(path.resolve(__dirname, outputedEmailHTMLPath), content, () => {
+      const outputName = "./uploads/emailTerceiroPDF_" + protocoloKey + ".pdf"
+      const options = { format: 'A4', path: outputName}
+      const file = { url }
+      html_to_pdf.generatePdf(file, options)   
+    })
+
+    await documentosToSendInEmail.push({filename: protocoloKey + ".pdf", path: outputedEmailPDFPath});
+
     let updates = {}
     updates['/protocolos/' + protocoloKey + "/terceiros"] = terceiros_previous;
 
@@ -489,18 +523,18 @@ let storage = multer.diskStorage(
 
   
   // create reusable transporter object using the default SMTP transport
-   let transporter = nodemailer.createTransport({
-    host: "mail.gestaogma.com.br",
-    port: 465,
-    secure: true, // true for 465, false for other ports
-    auth: {
-      user: 'no-reply@gestaogma.com.br', 
-      pass: '@Gma123456', 
-    },
-    tls: {
-      // do not fail on invalid certs
-      rejectUnauthorized: false,
-    },
+    let transporter = nodemailer.createTransport({
+      host: "mail.gestaogma.com.br",
+      port: 465,
+      secure: true, // true for 465, false for other ports
+      auth: {
+        user: 'no-reply@gestaogma.com.br', 
+        pass: '@Gma123456', 
+      },
+      tls: {
+        // do not fail on invalid certs
+        rejectUnauthorized: false,
+      },
   });
 
   //configurando mensagem
@@ -513,13 +547,13 @@ let storage = multer.diskStorage(
   }
 
   // send mail with defined transport object
-  await transporter.sendMail(mensagem, 
-    function(err){
-      if(err){
-        console.log(err)
-      }else{
-        console.log("tudo certo")
-      }
+    await transporter.sendMail(mensagem, 
+      function(err){
+        if(err){
+          console.log(err)
+        }else{
+          console.log("tudo certo")
+        }
     });
 
     // final return
