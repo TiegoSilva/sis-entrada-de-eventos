@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 //to use files from public folder
-app.use(express.static('public'));
+app.use(express.static('./src/public'));
 
 
 const port = 3000;
@@ -45,7 +45,6 @@ const nodemailer = require("nodemailer");
 // GET METHOD
 app.get('/', (req, res) => {
   res.send('index')
-  
 });
 
 
