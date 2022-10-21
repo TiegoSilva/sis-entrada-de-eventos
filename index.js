@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 //to use files from public folder
-app.use(express.static('public'));
+app.use(express.static('./public'));
 
 
 const port = 3000;
