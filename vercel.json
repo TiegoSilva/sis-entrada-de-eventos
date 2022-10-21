@@ -14,7 +14,7 @@
         {
             "src": "/entrada-de-colisao",
             "dest": "/public/entrada-colisao.html"
-        }
+        },
         {
             "src": "/uploads",
             "dest": "/uploads/"
