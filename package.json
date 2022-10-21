@@ -2,11 +2,11 @@
   "name": "sis-entrada-eventos",
   "version": "1.0.0",
   "description": "sitema de entrada de eventos",
-  "main": "./src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/index.js",
-    "dev": "nodemon ./src/index.js"
+    "start": "nodemon ./index.js",
+    "dev": "nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
