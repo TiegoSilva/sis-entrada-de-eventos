@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -18,8 +19,12 @@
     "fs": "^0.0.1-security",
     "html-pdf-node": "^1.0.8",
     "multer": "^1.4.4",
+    "netlify-lambda": "^2.0.15",
     "nodemailer": "^6.7.5",
     "path": "^0.12.7",
     "pdfjs": "^2.4.7"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.10.0"
   }
 }
