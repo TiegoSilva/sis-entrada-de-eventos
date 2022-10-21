@@ -13,7 +13,7 @@
         },
         {
             "src": "/entrada-de-colisao",
-            "dest": "public/entrada-colisao.html"
+            "dest": "/public/entrada-colisao.html"
         }
     ]
 }
